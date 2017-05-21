@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<head>
+	<style>
+		body {
+			font-family: Monospace;
+			background-color: #000;
+			color: #fff;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
+</head>
+<body>
+<!--<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>-->
+<script src="js/three.min.js"></script>
+<script>
+	// create document container
+	var container = document.createElement('div');
+	document.body.appendChild(container);
+
+	// prepare scene and camera(FoV, aspect ratio, near clipping plane, far clipping plane)
+	var camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
+	var scene = new THREE.Scene();
+	
+	// add renderer to container
+	renderer = new THREE.WebGLRenderer();
+	renderer.setPixelRatio(window.devicePixelRatio);
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.setClearColor(0x000000);
+	container.appendChild(renderer.domElement);
+
+	// raycaster and vector for storing mouse position
+	var raycaster = new THREE.Raycaster();
+	var mouse = new THREE.Vector2();
+	
+	
+	
+	// A cube, in the middle.
+	var cubeTexture = new THREE.Texture( undefined, THREE.UVMapping, THREE.RepeatWrapping, THREE.RepeatWrapping );
+	var cubeMaterial = new THREE.MeshBasicMaterial( { map: cubeTexture } );
+	var cubeGeometry = new THREE.BoxGeometry( 20, 20, 20 );
+	// Set a specific texture mapping.
+	var uvs;
+	for ( var i = 0; i < cubeGeometry.faceVertexUvs[ 0 ].length; i ++ ) {
+		uvs = cubeGeometry.faceVertexUvs[ 0 ][ i ];
+		for ( var j = 0; j < 3; j ++ ) {
+			if ( uvs[ j ].x < 0.1 ) uvs[ j ].x = - 1;
+			if ( uvs[ j ].y < 0.1 ) uvs[ j ].y = - 1;
+		}
+	}
+	var cube = new THREE.Mesh( cubeGeometry, cubeMaterial );
+	cube.position.x = 0;
+	cube.position.y = 0;
+	cube.position.z = 0;
+	scene.add( cube );
+	
+	// add light to scene
+	light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+	light.position.set(0, 1, 0);
+	scene.add(light);
+	
+
+	function onMouseMove( event ) {
+
+		// calculate mouse position in normalized device coordinates
+		// (-1 to +1) for both components
+
+		mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+	}
+
+	function render() {
+
+		// update the picking ray with the camera and mouse position
+		raycaster.setFromCamera( mouse, camera );
+
+		// calculate objects intersecting the picking ray
+		var intersects = raycaster.intersectObjects( scene.children );
+
+		for ( var i = 0; i < intersects.length; i++ ) {
+
+			intersects[ i ].object.material.color.set( 0xff0000 );
+
+		}
+
+		renderer.render( scene, camera );
+
+	}
+
+	window.addEventListener( 'mousemove', onMouseMove, false );
+
+	window.requestAnimationFrame(render);
+</script>
+</body>
+</html>
