@@ -36,11 +36,12 @@
 		camera.position.set(2, 35, 50);
 		scene = new THREE.Scene();
 
-		// SCENE CONTENTS SETUP
+		/*// SCENE CONTENTS SETUP
+		// for some reason, this really messes up the raycasting
 		// add grid for visual reference
 		var gridHelper = new THREE.GridHelper(28, 28, 0xaaaaaa, 0x303030);
 		gridHelper.position.set(0, -0.04, 0);
-		scene.add(gridHelper);
+		scene.add(gridHelper);*/
 		
 		// add light to scene
 		light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);

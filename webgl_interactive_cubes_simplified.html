@@ -17,27 +17,30 @@
 
 	<script src="js/three.min.js"></script>
 	<script>
-
-		var container;
-		var camera, scene, raycaster, renderer;
-
-		var mouse = new THREE.Vector2(), INTERSECTED;
+	var container;
+	var scene, camera, renderer, light, controls, raycaster;
+	var mouse = new THREE.Vector2(), current_intersected;
 
 		init();
-		animate();
 
 		function init() {
 
 			container = document.createElement( 'div' );
 			document.body.appendChild( container );
 
-			camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
-
+			// SCENE SETUP
+			// prepare scene and camera(FoV, aspect ratio, near clipping plane, far clipping plane)
+			camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
+			camera.position.set(2, 35, 50);
 			scene = new THREE.Scene();
-
-			var light = new THREE.DirectionalLight( 0xffffff, 1 );
-			light.position.set( 1, 1, 1 ).normalize();
-			scene.add( light );
+			
+			// add light to scene
+			light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+			light.position.set(0, 1, 0);
+			scene.add(light);
+			light = new THREE.DirectionalLight(0xffffff, 1.0);
+			light.position.set(0, 1, 0);
+			scene.add(light);
 
 			var geometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
 
@@ -71,6 +74,9 @@
 			container.appendChild(renderer.domElement);
 
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+			
+			
+			animate();
 		}
 
 		function onDocumentMouseMove( event ) {
@@ -84,43 +90,33 @@
 
 		//
 
-		function animate() {
-
-			requestAnimationFrame( animate );
-
-			render();
-		}
-
-		function render() {
-
-			// find intersections
-			raycaster.setFromCamera( mouse, camera );
-
-			var intersects = raycaster.intersectObjects( scene.children );
-
-			if ( intersects.length > 0 ) {
-
-				if ( INTERSECTED != intersects[ 0 ].object ) {
-
-					if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
-
-					INTERSECTED = intersects[ 0 ].object;
-					INTERSECTED.currentHex = INTERSECTED.material.emissive.getHex();
-					INTERSECTED.material.emissive.setHex( 0xff0000 );
-
+	function animate() {
+		// window function, queues another animate to be called 
+		requestAnimationFrame( animate );
+		
+		// add your own update code here
+		raycaster.setFromCamera(mouse, camera);
+		var intersects = raycaster.intersectObjects(scene.children);
+		
+		if (intersects.length > 0) {
+			if (current_intersected != intersects[0].object) {
+				if (current_intersected) {
+					current_intersected.material.emissive.setHex(current_intersected.pastHex);
 				}
-
-			} else {
-
-				if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
-
-				INTERSECTED = null;
-
+				current_intersected = intersects[0].object;
+				current_intersected.pastHex = current_intersected.material.emissive.getHex();
+				current_intersected.material.emissive.setHex(0xff0000);
 			}
-
-			renderer.render( scene, camera );
-
+		} else {
+			if (current_intersected) {
+				current_intersected.material.emissive.setHex(current_intersected.pastHex);
+			}
+			current_intersected = null;
 		}
+		
+		// tells three renderer to render this scene with this camera
+		renderer.render( scene, camera );
+	}
 
 	</script>
 
