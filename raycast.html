@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-	<title>three.js - reycast</title>
+	<title>three.js - raycast</title>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<style>
@@ -17,6 +17,7 @@
 <!--<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>-->
 <script src="js/three.min.js"></script>
 <script src="js/OrbitControls.js"></script>
+<script src="js/HorseThreeHelpers.js"></script>
 <script>
 	var container;
 	var scene, camera, renderer, light, controls, raycaster;
@@ -76,17 +77,10 @@
 		controls.target.set(0, 12, 0);
 		controls.update();
 		
-		document.addEventListener('mousemove', onDocumentMouseMove, false);
+		document.addEventListener('mousemove', onEventGetMouseCoordinates, false);
 
 		// AND BEGIN!
 		animate();
-	}
-	
-	function onDocumentMouseMove(event) {
-		event.preventDefault();
-		
-		mouse.x = (event.clientX / window.innerWidth)*2 - 1;
-		mouse.y = -(event.clientY / window.innerHeight)*2 + 1;
 	}
 
 	function animate() {

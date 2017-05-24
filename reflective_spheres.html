@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<head>
+	<title>three.js - reflective spheres</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+		body {
+			font-family: Monospace;
+			background-color: #eee;
+			color: #fff;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
+</head>
+<body>
+<script src="js/three.min.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/HorseThreeHelpers.js"></script>
+
+</body>
+<script>
+	var container;
+	var scene, camera, renderer, light, controls;
+	
+	init();
+	
+	function init() {
+		container = document.createElement('div');
+		document.body.appendChild(container);
+		
+		camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
+		camera.position.set(0, 0, 0);
+		scene = new THREE.Scene();
+		
+		light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+		light.position.set(0, 1, 0);
+		scene.add(light);
+		
+		// adding spheres
+		var geometry = new THREE.SphereBufferGeometry( 10, 15, 15 );
+		var n_spheres = 500;
+		for (i = 0; i < n_spheres; i++) {
+			let material = new THREE.MeshPhongMaterial({color: 0x00ddf7});
+			var object = new THREE.Mesh(geometry, material);
+			
+			object.position.x = Math.random() * 800 - 400;
+			object.position.y = Math.random() * 800 - 400;
+			object.position.z = Math.random() * 800 - 400;
+            
+			let randScale = Math.random();
+			object.scale.set(randScale + 0.5, randScale + 0.5, randScale + 0.5);
+
+			scene.add( object );
+		}
+		
+		renderer = new THREE.WebGLRenderer();
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setClearColor(0x000000);
+		renderer.sortObjects = false;
+		container.appendChild(renderer.domElement);
+
+		controls = new THREE.OrbitControls(camera, renderer.domElement);
+		controls.target.set(0, 12, 0);
+		controls.update();
+		
+		animate();
+	}
+	
+	function animate() {
+		requestAnimationFrame(animate);
+		
+		renderer.render(scene, camera);
+	}
+</script>
+</body>
