@@ -13,6 +13,12 @@ function HorseLoader() {
 }
 
 function onEventGetMouseCoordinates(event) {
+	/*  Stores mouse coordinates in a global 'mouse' variable. Variable mouse must exist.
+	
+		Example usage:
+		var mouse;
+		document.addEventListener('mousemove', onEventGetMouseCoordinates, false);
+	*/
 	event.preventDefault();
 	
 	mouse.x = (event.clientX / window.innerWidth)*2 - 1;
