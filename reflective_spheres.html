@@ -22,6 +22,7 @@
 <script>
 	var container;
 	var scene, camera, renderer, light, controls;
+	var spheres = [];
 	
 	init();
 	
@@ -50,8 +51,10 @@
             
 			let randScale = Math.random();
 			object.scale.set(randScale + 0.5, randScale + 0.5, randScale + 0.5);
+			object.trueScale = randScale;
 
 			scene.add( object );
+			spheres.push(object);
 		}
 		
 		renderer = new THREE.WebGLRenderer();
@@ -70,6 +73,8 @@
 	
 	function animate() {
 		requestAnimationFrame(animate);
+		
+		let timer = 0.001 * Date.now();
 		
 		renderer.render(scene, camera);
 	}
