@@ -86,6 +86,10 @@
 			sphere.position.x += 0.1*Math.sin(timer + i*1.1);
 			sphere.position.y -= sphereSpeed;
 			
+			// change size according to position
+			let newScale = sphere.trueScale*(1 - Math.abs(sphere.position.y)/sphereYBounds[1]);
+			sphere.scale.set(newScale, newScale, newScale);
+			
 			// clamp position to sphereYBounds
 			if (sphere.position.y < sphereYBounds[0]) {
 				sphere.position.y = sphereYBounds[1];
