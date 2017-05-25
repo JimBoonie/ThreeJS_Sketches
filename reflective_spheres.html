@@ -24,6 +24,9 @@
 	var scene, camera, renderer, light, controls;
 	var spheres = [];
 	
+	var sphereSpeed = 0.1;
+	var sphereYBounds = [-300, 300];
+	
 	init();
 	
 	function init() {
@@ -75,6 +78,19 @@
 		requestAnimationFrame(animate);
 		
 		let timer = 0.001 * Date.now();
+		
+		for (let i = 0; i < spheres.length; i++) {
+			let sphere = spheres[i];
+			
+			// change position
+			sphere.position.x += 0.1*Math.sin(timer + i*1.1);
+			sphere.position.y -= sphereSpeed;
+			
+			// clamp position to sphereYBounds
+			if (sphere.position.y < sphereYBounds[0]) {
+				sphere.position.y = sphereYBounds[1];
+			}
+		}
 		
 		renderer.render(scene, camera);
 	}
