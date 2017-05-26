@@ -27,6 +27,7 @@
 	
 	var sphereSpeed = 0.1;
 	var sphereYBounds = [-300, 300];
+	var sphereSpread = 400;
 	
 	init();
 	
@@ -70,9 +71,9 @@
 			//let material = new THREE.MeshPhongMaterial({color: 0x00ddf7});
 			var object = new THREE.Mesh(geometry, material);
 			
-			object.position.x = Math.random() * 800 - 400;
-			object.position.y = Math.random() * 800 - 400;
-			object.position.z = Math.random() * 800 - 400;
+			object.position.x = sphereSpread*(Math.random() - 0.5);
+			object.position.y = sphereSpread*(Math.random() - 0.5);
+			object.position.z = sphereSpread*(Math.random() - 0.5);
             
 			let randScale = Math.random();
 			object.scale.set(randScale + 0.5, randScale + 0.5, randScale + 0.5);
