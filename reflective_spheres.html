@@ -15,6 +15,7 @@
 </head>
 <body>
 <script src="js/three.min.js"></script>
+<script src="js/FresnelShader.js"></script>
 <script src="js/OrbitControls.js"></script>
 <script src="js/HorseThreeHelpers.js"></script>
 
@@ -37,6 +38,18 @@
 		camera.position.set(0, 0, 0);
 		scene = new THREE.Scene();
 		
+		// assign background cube
+		var path = "assets/cubemaps/Tantolunden4/";
+		var format = ".jpg";
+		var urls = [ 
+						path + 'posx' + format, path + 'negx' + format,
+						path + 'posy' + format, path + 'negy' + format,
+						path + 'posz' + format, path + 'negz' + format
+					];
+		var textureCube = new THREE.CubeTextureLoader().load(urls);
+		textureCube.format = THREE.RGBFormat;
+		scene.background = textureCube;
+		
 		light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
 		light.position.set(0, 1, 0);
 		scene.add(light);
@@ -44,8 +57,17 @@
 		// adding spheres
 		var geometry = new THREE.SphereBufferGeometry( 10, 15, 15 );
 		var n_spheres = 500;
+		// iridescent shader material
+		var shader = THREE.FresnelShader;
+		var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+		uniforms["tCube"].value = textureCube;
+		var material = new THREE.ShaderMaterial({
+			uniforms: uniforms,
+			vertexShader: shader.vertexShader,
+			fragmentShader: shader.fragmentShader
+		});
 		for (i = 0; i < n_spheres; i++) {
-			let material = new THREE.MeshPhongMaterial({color: 0x00ddf7});
+			//let material = new THREE.MeshPhongMaterial({color: 0x00ddf7});
 			var object = new THREE.Mesh(geometry, material);
 			
 			object.position.x = Math.random() * 800 - 400;
