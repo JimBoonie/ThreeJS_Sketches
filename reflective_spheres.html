@@ -22,21 +22,26 @@
 </body>
 <script>
 	var container;
+	var container_id = "WebGL-Canvas";
 	var scene, camera, renderer, light, controls;
 	var spheres = [];
 	var mouse = {x: 0, y: 0};
 	
+	var isMouseOverCanvas = false;
 	var PI = Math.PI;
 	var mouseSensitivity = 0.01;
 	var sphereSpeed = 0.1;
 	var sphereSpread = 400;
 	var sphereYBounds = [-sphereSpread/2, sphereSpread/2];
 	
-	document.addEventListener('mousemove', onEventGetMouseCoordinates, false);
 	init();
+	container.addEventListener('mouseover', onEventMouseOverCanvas, false);
+	container.addEventListener('mouseout', onEventMouseLeftCanvas, false);
+	container.addEventListener('mousemove', onEventGetMouseCoordinates, false);
 	
 	function init() {
 		container = document.createElement('div');
+		container.id = container_id;
 		document.body.appendChild(container);
 		
 		camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
@@ -102,6 +107,14 @@
 		animate();
 	}
 	
+	function onEventMouseOverCanvas() {
+		isMouseOverCanvas = true;
+	}
+	
+	function onEventMouseLeftCanvas() {
+		isMouseOverCanvas = false;
+	}
+	
 	function moveSpheres() {
 		let timer = 0.001 * Date.now();
 		
@@ -124,6 +137,10 @@
 	}
 	
 	function rotateCamera() {
+		if (!isMouseOverCanvas) {
+			return;
+		}
+	
 		var newXRotation = camera.rotation.x + mouseSensitivity*mouse.y;
 		if (newXRotation > -PI/2 && newXRotation < PI/2) {
 			camera.rotation.x = newXRotation;
