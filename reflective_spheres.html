@@ -26,8 +26,8 @@
 	var spheres = [];
 	
 	var sphereSpeed = 0.1;
-	var sphereYBounds = [-300, 300];
 	var sphereSpread = 400;
+	var sphereYBounds = [-sphereSpread/2, sphereSpread/2];
 	
 	init();
 	
@@ -97,9 +97,7 @@
 		animate();
 	}
 	
-	function animate() {
-		requestAnimationFrame(animate);
-		
+	function moveSpheres() {
 		let timer = 0.001 * Date.now();
 		
 		for (let i = 0; i < spheres.length; i++) {
@@ -118,6 +116,13 @@
 				sphere.position.y = sphereYBounds[1];
 			}
 		}
+	}
+	
+	function animate() {
+		requestAnimationFrame(animate);
+		
+		moveSpheres();
+		
 		
 		renderer.render(scene, camera);
 	}
