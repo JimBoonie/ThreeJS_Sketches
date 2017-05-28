@@ -24,11 +24,15 @@
 	var container;
 	var scene, camera, renderer, light, controls;
 	var spheres = [];
+	var mouse = {x: 0, y: 0};
 	
+	var PI = Math.PI;
+	var mouseSensitivity = 0.01;
 	var sphereSpeed = 0.1;
 	var sphereSpread = 400;
 	var sphereYBounds = [-sphereSpread/2, sphereSpread/2];
 	
+	document.addEventListener('mousemove', onEventGetMouseCoordinates, false);
 	init();
 	
 	function init() {
@@ -90,9 +94,10 @@
 		renderer.sortObjects = false;
 		container.appendChild(renderer.domElement);
 
-		controls = new THREE.OrbitControls(camera, renderer.domElement);
+		/*controls = new THREE.OrbitControls(camera, renderer.domElement);
 		controls.target.set(0, 12, 0);
 		controls.update();
+		*/
 		
 		animate();
 	}
@@ -118,11 +123,20 @@
 		}
 	}
 	
+	function rotateCamera() {
+		var newXRotation = camera.rotation.x + mouseSensitivity*mouse.y;
+		if (newXRotation > -PI/2 && newXRotation < PI/2) {
+			camera.rotation.x = newXRotation;
+		}
+			
+		camera.rotation.y -= mouseSensitivity*mouse.x;
+	}
+	
 	function animate() {
 		requestAnimationFrame(animate);
 		
 		moveSpheres();
-		
+		rotateCamera();
 		
 		renderer.render(scene, camera);
 	}

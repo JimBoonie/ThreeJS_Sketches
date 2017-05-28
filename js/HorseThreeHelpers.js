@@ -14,6 +14,7 @@ function HorseLoader() {
 
 function onEventGetMouseCoordinates(event) {
 	/*  Stores mouse coordinates in a global 'mouse' variable. Variable mouse must exist.
+		The origin is roughly the center of the screen.
 	
 		Example usage:
 		var mouse;
