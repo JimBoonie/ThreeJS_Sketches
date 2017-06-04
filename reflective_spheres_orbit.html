@@ -84,6 +84,21 @@
 		light.position.set(0, 1, 0);
 		scene.add(light);
 		
+		// renderer
+		renderer = new THREE.WebGLRenderer();
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setClearColor(0x000310);
+		renderer.sortObjects = false;
+		container.appendChild(renderer.domElement);
+
+		// camera controls
+		controls = new THREE.OrbitControls(camera, renderer.domElement);
+		controls.target.set(0, 0, 1);
+		controls.enableZoom = false;
+		controls.enablePan = false;
+		controls.update();
+		
 		// adding spheres
 		var geometry = new THREE.SphereBufferGeometry( 10, 15, 15 );
 		var n_spheres = 500;
@@ -111,21 +126,6 @@
 			scene.add( object );
 			spheres.push(object);
 		}
-		
-		// renderer
-		renderer = new THREE.WebGLRenderer();
-		renderer.setPixelRatio(window.devicePixelRatio);
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		renderer.setClearColor(0x000310);
-		renderer.sortObjects = false;
-		container.appendChild(renderer.domElement);
-
-		// camera controls
-		controls = new THREE.OrbitControls(camera, renderer.domElement);
-		controls.target.set(0, 0, 1);
-		controls.enableZoom = false;
-		controls.enablePan = false;
-		controls.update();
 		
 		animate();
 	}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<head>
+	<style>
+		body {
+			font-family: Monospace;
+			background-color: #000;
+			color: #fff;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
+</head>
+<body>
+<!--<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>-->
+<script src="js/three.min.js"></script>
+<script src="js/OrbitControls.js"></script>
+<script src="js/HorseThreeHelpers.js"></script>
+<script>
+	var container;
+	var scene, camera, renderer, light, controls;
+	var geometry, initGeometry;
+	
+	init();
+
+	function init() {
+		// DOM SETUP
+		// create document container
+		container = document.createElement('div');
+		document.body.appendChild(container);
+
+		// SCENE SETUP
+		// prepare scene and camera(FoV, aspect ratio, near clipping plane, far clipping plane)
+		camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
+		scene = new THREE.Scene();
+		
+		// add renderer to container
+		renderer = new THREE.WebGLRenderer();
+		renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize(window.innerWidth, window.innerHeight);
+		renderer.setClearColor(0x000000);
+		container.appendChild(renderer.domElement);
+
+		// SCENE CONTENTS SETUP
+		// add grid for visual reference
+		var gridHelper = new THREE.GridHelper(28, 28, 0xaaaaaa, 0x303030);
+		gridHelper.position.set(0, -0.04, 0);
+		scene.add(gridHelper);
+		
+		// add light to scene
+		light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+		light.position.set(0, 1, 0);
+		scene.add(light);
+		light = new THREE.DirectionalLight(0xffffff, 1.0);
+		light.position.set(0, 1, 0);
+		scene.add(light);
+		
+		// add plane
+		geometry = new THREE.PlaneGeometry(10, 10, 1, 1);
+		var material = new THREE.MeshLambertMaterial({color: 0xF3FFE2});
+		var mesh = new THREE.Mesh(geometry, material);
+		scene.add(mesh);
+		initGeometry = geometry.clone();
+		
+		// USER INTERFACE SETUP
+		// add camera controller
+		controls = new THREE.OrbitControls(camera, renderer.domElement);
+		controls.target.set(0, 12, 0);
+		camera.position.set(2, 35, 50);
+		controls.update();
+		
+		// AND BEGIN!
+		animate();
+	}
+
+	var delta = 0;
+	var moveScale = 5;
+	function animate() {
+		// window function, queues another animate to be called 
+		requestAnimationFrame( animate );
+		
+		// add your own update code here
+		delta += 0.05;
+		for (let i = 0; i < geometry.vertices.length; i++) {
+			if (i % 2 == 0) {
+				geometry.vertices[i].x = initGeometry.vertices[i].x + Math.sin(delta) * moveScale;
+			} else {
+				geometry.vertices[i].y = initGeometry.vertices[i].y + Math.sin(delta) * moveScale;
+			}
+		}
+		geometry.verticesNeedUpdate = true;
+		
+		// tells three renderer to render this scene with this camera
+		renderer.render( scene, camera );
+	}
+</script>
+</body>
+</html>
