@@ -170,7 +170,7 @@
 			let sphere = spheres[i];
 			
 			// change position
-			sphere.position.x += 0.1*Math.sin(timer + i*1.1);
+			sphere.position.x += 0.02*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
 			sphere.position.y += sphereSpeed;
 			
 			// change size according to position
