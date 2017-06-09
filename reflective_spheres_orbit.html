@@ -33,7 +33,7 @@
 	var mouseSensitivity = 0.01;
 	var sphereSpeed = 0.1;
 	var sphereSpread = 200;
-	var sphereOscillationAmplitude = 0.02;
+	var sphereOscillationAmplitude = 0.005;
 	var sphereYBounds = [-sphereSpread/2, sphereSpread/2];
 	
 	init();
@@ -132,9 +132,14 @@
 			
 			randomlyDistribute(object);
             
+			// assign random scale
 			let randScale = Math.random();
 			object.scale.set(randScale + 0.5, randScale + 0.5, randScale + 0.5);
 			object.trueScale = randScale;
+			
+			// assign random oscillation amplitudes
+			object.xOscillationAmplitude = Math.random();
+			object.zOscillationAmplitude = 1 - object.xOscillationAmplitude;
 
 			scene.add( object );
 			spheres.push(object);
@@ -171,7 +176,8 @@
 			let sphere = spheres[i];
 			
 			// change position
-			sphere.position.x += sphereOscillationAmplitude*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
+			sphere.position.x += sphereOscillationAmplitude*sphere.xOscillationAmplitude*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
+			sphere.position.z += sphereOscillationAmplitude*sphere.zOscillationAmplitude*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
 			sphere.position.y += sphereSpeed;
 			
 			// change size according to position
