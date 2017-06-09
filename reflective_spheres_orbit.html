@@ -33,6 +33,7 @@
 	var mouseSensitivity = 0.01;
 	var sphereSpeed = 0.1;
 	var sphereSpread = 200;
+	var sphereOscillationAmplitude = 0.02;
 	var sphereYBounds = [-sphereSpread/2, sphereSpread/2];
 	
 	init();
@@ -170,7 +171,7 @@
 			let sphere = spheres[i];
 			
 			// change position
-			sphere.position.x += 0.02*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
+			sphere.position.x += sphereOscillationAmplitude*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
 			sphere.position.y += sphereSpeed;
 			
 			// change size according to position
