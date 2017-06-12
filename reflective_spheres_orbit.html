@@ -30,11 +30,14 @@
 	
 	var isMouseOverCanvas = false;
 	var PI = Math.PI;
+	
 	var mouseSensitivity = 0.01;
 	var sphereSpeed = 0.1;
 	var sphereSpread = 200;
 	var sphereOscillationAmplitude = 0.005;
 	var sphereTimeScale = 0.001;
+	var cameraBobAmplitude = 0.05;
+	var cameraBobTimeScale = 0.0005;
 	var sphereYBounds = [-sphereSpread/2, sphereSpread/2];
 	
 	init();
@@ -194,10 +197,16 @@
 		}
 	}
 	
+	function bobCamera() {
+		let timer = cameraBobTimeScale*Date.now();
+		camera.position.y += cameraBobAmplitude*Math.sin(timer);
+	}
+	
 	function animate() {
 		requestAnimationFrame(animate);
 		
 		moveSpheres();
+		bobCamera();
 		
 		renderer.render(scene, camera);
 	}
