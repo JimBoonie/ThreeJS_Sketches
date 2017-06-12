@@ -34,6 +34,7 @@
 	var sphereSpeed = 0.1;
 	var sphereSpread = 200;
 	var sphereOscillationAmplitude = 0.005;
+	var sphereTimeScale = 0.001;
 	var sphereYBounds = [-sphereSpread/2, sphereSpread/2];
 	
 	init();
@@ -170,7 +171,7 @@
 	}
 	
 	function moveSpheres() {
-		let timer = 0.001 * Date.now();
+		let timer = sphereTimeScale*Date.now();
 		
 		for (let i = 0; i < spheres.length; i++) {
 			let sphere = spheres[i];
