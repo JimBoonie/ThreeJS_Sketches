@@ -24,13 +24,15 @@
 <script>
 	var container;
 	var container_id = "WebGL-Canvas";
-	var scene, camera, renderer, light, controls;
+	var scene, camera, renderer, controls;
+	var lights = [];
 	var spheres = [];
 	var mouse = {x: 0, y: 0};
 	
 	var isMouseOverCanvas = false;
 	var PI = Math.PI;
 	
+	var useCameraBob = false;
 	var mouseSensitivity = 0.01;
 	var sphereSpeed = 0.1;
 	var sphereSpread = 200;
@@ -88,7 +90,7 @@
 		}, loadManager.onProgress, loadManager.onError);
 		
 		// assign background cube
-		var path = "assets/cubemaps/Tantolunden4/";
+		var path = "assets/cubemaps/HornstullsStrand/";
 		var format = ".jpg";
 		var urls = [ 
 						path + 'posx' + format, path + 'negx' + format,
@@ -99,9 +101,18 @@
 		textureCube.format = THREE.RGBFormat;
 		//scene.background = textureCube;
 		
-		light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+		// ambient lighting
+		var light = new THREE.AmbientLight(0x444444, 1.0);
 		light.position.set(0, 1, 0);
+		lights.push(light);
 		scene.add(light);
+		
+		// aesthetic light
+		/*
+		var light = new THREE.PointLight(0xffffff, 1, 800, 2);
+		light.position.set(0, 10, 0);
+		lights.push(light);
+		scene.add(light);*/
 		
 		// renderer
 		renderer = new THREE.WebGLRenderer();
@@ -206,7 +217,9 @@
 		requestAnimationFrame(animate);
 		
 		moveSpheres();
-		bobCamera();
+		if (useCameraBob) {
+			bobCamera();
+		}
 		
 		renderer.render(scene, camera);
 	}
