@@ -24,7 +24,7 @@
 <script>
 	var container;
 	var container_id = "WebGL-Canvas";
-	var scene, camera, renderer, controls;
+	var scene, camera, renderer, controls, seafloor;
 	var lights = [];
 	var spheres = [];
 	var mouse = {x: 0, y: 0};
@@ -32,14 +32,14 @@
 	var isMouseOverCanvas = false;
 	var PI = Math.PI;
 	
-	var useCameraBob = false;
+	var useCameraBob = true;
 	var mouseSensitivity = 0.01;
 	var sphereSpeed = 0.1;
-	var sphereSpread = 200;
-	var sphereOscillationAmplitude = 0.005;
+	var sphereSpread = 400;
+	var sphereOscillationAmplitude = 0.002;
 	var sphereTimeScale = 0.001;
-	var cameraBobAmplitude = 0.05;
-	var cameraBobTimeScale = 0.0005;
+	var seafloorBobAmplitude = 0.05;
+	var seafloorBobTimeScale = 0.0005;
 	var sphereYBounds = [-sphereSpread/2, sphereSpread/2];
 	
 	init();
@@ -83,7 +83,7 @@
 		var loadManager = HorseLoader();
 		var loader = new THREE.FBXLoader(loadManager);
 		loader.load('assets/seafloor.fbx', function(object) {
-			var seafloor = object;
+			seafloor = object;
 			seafloor.scale.set(sphereSpread/8, sphereSpread/8, sphereSpread/8);
 			seafloor.position.y = -sphereSpread/2-50;
 			scene.add(seafloor);
@@ -131,7 +131,7 @@
 		
 		// adding spheres
 		var geometry = new THREE.SphereBufferGeometry( 10, 15, 15 );
-		var n_spheres = 200;
+		var n_spheres = 500;
 		// iridescent shader material
 		var shader = THREE.FresnelShader;
 		var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
@@ -208,9 +208,10 @@
 		}
 	}
 	
-	function bobCamera() {
-		let timer = cameraBobTimeScale*Date.now();
-		camera.position.y += cameraBobAmplitude*Math.sin(timer);
+	function bobObject(object, bobTimeScale, bobAmplitude) {
+		if (!object) { return; } // leave if object does not exist
+		let timer = bobTimeScale*Date.now();
+		object.position.y += bobAmplitude*Math.sin(timer);
 	}
 	
 	function animate() {
@@ -218,7 +219,7 @@
 		
 		moveSpheres();
 		if (useCameraBob) {
-			bobCamera();
+			bobObject(seafloor, seafloorBobTimeScale, seafloorBobAmplitude);
 		}
 		
 		renderer.render(scene, camera);
