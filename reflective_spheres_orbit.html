@@ -138,8 +138,8 @@
 			object.trueScale = randScale;
 			
 			// assign random oscillation amplitudes
-			object.xOscillationAmplitude = Math.random();
-			object.zOscillationAmplitude = 1 - object.xOscillationAmplitude;
+			object.xOscillation = Math.random();
+			object.zOscillation = 1 - object.xOscillation;
 
 			scene.add( object );
 			spheres.push(object);
@@ -176,8 +176,8 @@
 			let sphere = spheres[i];
 			
 			// change position
-			sphere.position.x += sphereOscillationAmplitude*sphere.xOscillationAmplitude*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
-			sphere.position.z += sphereOscillationAmplitude*sphere.zOscillationAmplitude*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
+			sphere.position.x += sphereOscillationAmplitude*sphere.xOscillation*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
+			sphere.position.z += sphereOscillationAmplitude*sphere.zOscillation*Math.sin(timer + i*1.1)*Math.abs(sphere.position.y);
 			sphere.position.y += sphereSpeed;
 			
 			// change size according to position
