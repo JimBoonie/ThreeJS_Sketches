@@ -58,6 +58,7 @@
 		var cube = new THREE.Mesh(geometry, material);
 		cube.position.set(0, 0, 0);
 		cube.rotation.set(3.14/4, 3.14/4, 3.14/4);	
+		cube.hyperlink = 'http://www.wikipedia.org';
 		scene.add(cube);		
 		
 		// add raycaster
@@ -78,9 +79,17 @@
 		controls.update();
 		
 		document.addEventListener('mousemove', onEventGetMouseCoordinates, false);
+		document.addEventListener('mousedown', navigateToSite, false);
 
 		// AND BEGIN!
 		animate();
+	}
+
+	function navigateToSite() {
+		console.log(current_intersected);
+		if (current_intersected && current_intersected.hyperlink) {
+			window.location.href = current_intersected.hyperlink;
+		}
 	}
 
 	function animate() {
