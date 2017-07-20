@@ -8,6 +8,13 @@ sudo apt-get install nodejs npm
 npm install http-server -g
 ```
 
+# MAC: SETUP
+## Install HTTP server
+```
+brew install node
+npm install http-server -g
+```
+
 ## start HTTP server
 ```
 http-server /path/to/docroot
