@@ -59,6 +59,13 @@
         cube.position.set(0, 0, 0);
         cube.rotation.set(3.14/4, 3.14/4, 3.14/4);  
         cube.hyperlink = 'http://www.wikipedia.org';
+        cube.onIntersect = function() {
+            cube.material.emissive.setHex(cube.pastHex);
+        };
+        cube.onLeaveIntersect = function() {
+            cube.pastHex = cube.material.emissive.getHex();
+            cube.material.emissive.setHex(0xff0000);
+        };
         scene.add(cube);        
         
         // add raycaster
@@ -95,16 +102,17 @@
         
         if (intersects.length > 0) {
             if (current_intersected != intersects[0].object) {
-                if (current_intersected) {
-                    current_intersected.material.emissive.setHex(current_intersected.pastHex);
+                if (current_intersected && current_intersected.onIntersect) {
+                    current_intersected.onIntersect();
                 }
                 current_intersected = intersects[0].object;
-                current_intersected.pastHex = current_intersected.material.emissive.getHex();
-                current_intersected.material.emissive.setHex(0xff0000);
+                if (current_intersected && current_intersected.onLeaveIntersect) {
+                    current_intersected.onLeaveIntersect();
+                }
             }
         } else {
-            if (current_intersected) {
-                current_intersected.material.emissive.setHex(current_intersected.pastHex);
+            if (current_intersected && current_intersected.onIntersect) {
+                current_intersected.onIntersect();
             }
             current_intersected = null;
         }
