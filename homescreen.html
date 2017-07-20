@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<head>
+    <title>three.js - homescreen</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #000;
+            color: #fff;
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+    
+<body>
+<script src='js/three.min.js'></script>
+<script src='js/OrbitControls.js'></script>
+<script src='js/HorseThreeHelpers.js'></script>
+</body>
+
+<script>
+    var container, scene, camera, renderer, controls, raycaster;
+    var mouse = new THREE.Vector2(), current_intersected;
+
+    init();
+
+    function init() {
+        // setup
+        container = document.createElement('div');
+        document.body.appendChild(container);
+
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
+        camera.position.set(2, 35, 50);
+        scene = new THREE.Scene();
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000);
+        renderer.sortObjects = false;
+        container.appendChild(renderer.domElement);
+
+        // objects and lighting
+        light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+        light.position.set(0, 1, 0);
+        scene.add(light);
+        light = new THREE.DirectionalLight(0xffffff, 1.0);
+        light.position.set(0, 1, 0);
+        scene.add(light);
+
+        var geometry = new THREE.BoxBufferGeometry(20, 20, 20);
+        var material = new THREE.MeshLambertMaterial({color: 0x00ddf7});
+        var cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0, 0, 0);
+        cube.rotation.set(3.14/4, 3.14/4, 3.14/4);  
+        cube.hyperlink = 'http://www.wikipedia.org';
+        scene.add(cube);    
+
+        // controls and events
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 12, 0);
+        controls.update();
+        
+        document.addEventListener('mousemove', onEventGetMouseCoordinates, false);
+        document.addEventListener('mousedown', navigateToLinkOnIntersectedObject, false);
+
+        // BEGIN
+        animate();
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            renderer.render(scene, camera);
+        }
+    }
+</script>
