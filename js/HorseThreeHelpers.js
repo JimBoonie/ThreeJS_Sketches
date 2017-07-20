@@ -31,3 +31,25 @@ function navigateToLinkOnIntersectedObject() {
         window.location.href = current_intersected.hyperlink;
     }
 }
+
+function mouseIntersectBehavior() {
+    raycaster.setFromCamera(mouse, camera);
+    var intersects = raycaster.intersectObjects(scene.children);
+    
+    if (intersects.length > 0) {
+        if (current_intersected != intersects[0].object) {
+            if (current_intersected && current_intersected.onIntersect) {
+                current_intersected.onIntersect();
+            }
+            current_intersected = intersects[0].object;
+            if (current_intersected && current_intersected.onLeaveIntersect) {
+                current_intersected.onLeaveIntersect();
+            }
+        }
+    } else {
+        if (current_intersected && current_intersected.onIntersect) {
+            current_intersected.onIntersect();
+        }
+        current_intersected = null;
+    }
+}
