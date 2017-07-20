@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <head>
-	<title>three.js - raycast</title>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-	<style>
-		body {
-			font-family: Monospace;
-			background-color: #000;
-			color: #fff;
-			margin: 0px;
-			overflow: hidden;
-		}
-	</style>
+    <title>three.js - raycast</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            font-family: Monospace;
+            background-color: #000;
+            color: #fff;
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
 <!--<script src="//cdn.rawgit.com/mrdoob/three.js/master/build/three.min.js"></script>-->
@@ -19,106 +19,99 @@
 <script src="js/OrbitControls.js"></script>
 <script src="js/HorseThreeHelpers.js"></script>
 <script>
-	var container;
-	var scene, camera, renderer, light, controls, raycaster;
-	var mouse = new THREE.Vector2(), current_intersected;
-	
-	init();
+    var container;
+    var scene, camera, renderer, light, controls, raycaster;
+    var mouse = new THREE.Vector2(), current_intersected;
+    
+    init();
 
-	function init() {
-		// DOM SETUP
-		// create document container
-		container = document.createElement('div');
-		document.body.appendChild(container);
+    function init() {
+        // DOM SETUP
+        // create document container
+        container = document.createElement('div');
+        document.body.appendChild(container);
 
-		// SCENE SETUP
-		// prepare scene and camera(FoV, aspect ratio, near clipping plane, far clipping plane)
-		camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
-		camera.position.set(2, 35, 50);
-		scene = new THREE.Scene();
+        // SCENE SETUP
+        // prepare scene and camera(FoV, aspect ratio, near clipping plane, far clipping plane)
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 1, 2000);
+        camera.position.set(2, 35, 50);
+        scene = new THREE.Scene();
 
-		/*// SCENE CONTENTS SETUP
-		// for some reason, this really messes up the raycasting
-		// add grid for visual reference
-		var gridHelper = new THREE.GridHelper(28, 28, 0xaaaaaa, 0x303030);
-		gridHelper.position.set(0, -0.04, 0);
-		scene.add(gridHelper);*/
-		
-		// add light to scene
-		light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
-		light.position.set(0, 1, 0);
-		scene.add(light);
-		light = new THREE.DirectionalLight(0xffffff, 1.0);
-		light.position.set(0, 1, 0);
-		scene.add(light);
-		
-		// add cube to demonstrate raycast
-		var geometry = new THREE.BoxBufferGeometry(20, 20, 20);
-		var material = new THREE.MeshLambertMaterial({color: 0x00ddf7});
-		var cube = new THREE.Mesh(geometry, material);
-		cube.position.set(0, 0, 0);
-		cube.rotation.set(3.14/4, 3.14/4, 3.14/4);	
-		cube.hyperlink = 'http://www.wikipedia.org';
-		scene.add(cube);		
-		
-		// add raycaster
-		raycaster = new THREE.Raycaster();
-		
-		// add renderer to container
-		renderer = new THREE.WebGLRenderer();
-		renderer.setPixelRatio(window.devicePixelRatio);
-		renderer.setSize(window.innerWidth, window.innerHeight);
-		renderer.setClearColor(0x000000);
-		renderer.sortObjects = false;
-		container.appendChild(renderer.domElement);
+        /*// SCENE CONTENTS SETUP
+        // for some reason, this really messes up the raycasting
+        // add grid for visual reference
+        var gridHelper = new THREE.GridHelper(28, 28, 0xaaaaaa, 0x303030);
+        gridHelper.position.set(0, -0.04, 0);
+        scene.add(gridHelper);*/
+        
+        // add light to scene
+        light = new THREE.HemisphereLight(0xffffff, 0x444444, 1.0);
+        light.position.set(0, 1, 0);
+        scene.add(light);
+        light = new THREE.DirectionalLight(0xffffff, 1.0);
+        light.position.set(0, 1, 0);
+        scene.add(light);
+        
+        // add cube to demonstrate raycast
+        var geometry = new THREE.BoxBufferGeometry(20, 20, 20);
+        var material = new THREE.MeshLambertMaterial({color: 0x00ddf7});
+        var cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0, 0, 0);
+        cube.rotation.set(3.14/4, 3.14/4, 3.14/4);  
+        cube.hyperlink = 'http://www.wikipedia.org';
+        scene.add(cube);        
+        
+        // add raycaster
+        raycaster = new THREE.Raycaster();
+        
+        // add renderer to container
+        renderer = new THREE.WebGLRenderer();
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000);
+        renderer.sortObjects = false;
+        container.appendChild(renderer.domElement);
 
-		// USER INTERFACE SETUP
-		// add camera controller
-		controls = new THREE.OrbitControls(camera, renderer.domElement);
-		controls.target.set(0, 12, 0);
-		controls.update();
-		
-		document.addEventListener('mousemove', onEventGetMouseCoordinates, false);
-		document.addEventListener('mousedown', navigateToSite, false);
+        // USER INTERFACE SETUP
+        // add camera controller
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.target.set(0, 12, 0);
+        controls.update();
+        
+        document.addEventListener('mousemove', onEventGetMouseCoordinates, false);
+        document.addEventListener('mousedown', navigateToLinkOnIntersectedObject, false);
 
-		// AND BEGIN!
-		animate();
-	}
+        // AND BEGIN!
+        animate();
+    }
 
-	function navigateToSite() {
-		console.log(current_intersected);
-		if (current_intersected && current_intersected.hyperlink) {
-			window.location.href = current_intersected.hyperlink;
-		}
-	}
-
-	function animate() {
-		// window function, queues another animate to be called 
-		requestAnimationFrame( animate );
-		
-		// add your own update code here
-		raycaster.setFromCamera(mouse, camera);
-		var intersects = raycaster.intersectObjects(scene.children);
-		
-		if (intersects.length > 0) {
-			if (current_intersected != intersects[0].object) {
-				if (current_intersected) {
-					current_intersected.material.emissive.setHex(current_intersected.pastHex);
-				}
-				current_intersected = intersects[0].object;
-				current_intersected.pastHex = current_intersected.material.emissive.getHex();
-				current_intersected.material.emissive.setHex(0xff0000);
-			}
-		} else {
-			if (current_intersected) {
-				current_intersected.material.emissive.setHex(current_intersected.pastHex);
-			}
-			current_intersected = null;
-		}
-		
-		// tells three renderer to render this scene with this camera
-		renderer.render( scene, camera );
-	}
+    function animate() {
+        // window function, queues another animate to be called 
+        requestAnimationFrame( animate );
+        
+        // add your own update code here
+        raycaster.setFromCamera(mouse, camera);
+        var intersects = raycaster.intersectObjects(scene.children);
+        
+        if (intersects.length > 0) {
+            if (current_intersected != intersects[0].object) {
+                if (current_intersected) {
+                    current_intersected.material.emissive.setHex(current_intersected.pastHex);
+                }
+                current_intersected = intersects[0].object;
+                current_intersected.pastHex = current_intersected.material.emissive.getHex();
+                current_intersected.material.emissive.setHex(0xff0000);
+            }
+        } else {
+            if (current_intersected) {
+                current_intersected.material.emissive.setHex(current_intersected.pastHex);
+            }
+            current_intersected = null;
+        }
+        
+        // tells three renderer to render this scene with this camera
+        renderer.render( scene, camera );
+    }
 </script>
 </body>
 </html>
